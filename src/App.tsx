@@ -23,6 +23,21 @@ interface Submission {
   prompt: string;
 }
 
+// Replace 'localhost' with your actual IP address
+// Replace the SERVER_IP line with:
+const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('ngrok');
+const SERVER_IP = isDev 
+  ? window.location.hostname.includes('ngrok') 
+    ? window.location.hostname  // Use ngrok URL
+    : '192.168.2.42'            // Use local IP for local testing
+  : 'your-production-server.com';
+
+const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_PORT = window.location.hostname.includes('ngrok') ? '' : ':3001';
+
+// Update WebSocket connections to:
+const websocket = new WebSocket(`${WS_PROTOCOL}//${SERVER_IP}${WS_PORT}`);
+
 function App() {
   const [gameState, setGameState] = useState<GameState>('join');
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -50,8 +65,8 @@ function App() {
       setGameState('lobby');
       setIsHost(true);
       
-      // Set up host WebSocket connection
-      const websocket = new WebSocket('ws://localhost:3001');
+      // Set up host WebSocket connection - UPDATED IP
+      const websocket = new WebSocket(`ws://${SERVER_IP}:3001`);
       
       websocket.onopen = () => {
         console.log('Connected to server as host');
@@ -87,8 +102,8 @@ function App() {
     setIsJoining(true);
     setJoinError('');
 
-    // Connect to WebSocket server
-    const websocket = new WebSocket('ws://localhost:3001');
+    // Connect to WebSocket server - UPDATED IP
+    const websocket = new WebSocket(`ws://${SERVER_IP}:3001`);
     
     websocket.onopen = () => {
       console.log('Connected to server as player');
@@ -99,6 +114,7 @@ function App() {
       }));
     };
     
+    // ...existing code...
     websocket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       
