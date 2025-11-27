@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import FoodIcon from './FoodIcon';
 
 interface JoinScreenProps {
   onJoin: (roomCode: string, username: string) => void;
@@ -36,19 +35,13 @@ export default function JoinScreen({ onJoin, isLoading = false, error }: JoinScr
 
       <div className="relative min-h-screen flex items-center justify-center px-8">
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border-4 border-amber-200 max-w-md w-full">
-          {/* Title */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-black text-amber-900 mb-2">
-              JOIN THE CHAOS
+              JOIN UP AND CHEF OOF
             </h1>
-            <p className="text-amber-700 text-lg">
-              Enter the room code and your chef name
-            </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Room Code Input */}
             <div>
               <label htmlFor="roomCode" className="block text-amber-900 font-semibold mb-2">
                 Room Code
@@ -65,7 +58,6 @@ export default function JoinScreen({ onJoin, isLoading = false, error }: JoinScr
               />
             </div>
 
-            {/* Username Input */}
             <div>
               <label htmlFor="username" className="block text-amber-900 font-semibold mb-2">
                 Chef Name
@@ -85,14 +77,12 @@ export default function JoinScreen({ onJoin, isLoading = false, error }: JoinScr
               </p>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="bg-red-100 border-2 border-red-300 rounded-xl p-3">
                 <p className="text-red-700 font-semibold text-center">{error}</p>
               </div>
             )}
 
-            {/* Join Button */}
             <button
               type="submit"
               disabled={isLoading || roomCode.length !== 4 || username.trim().length === 0}
