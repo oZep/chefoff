@@ -29,7 +29,7 @@ const isDev = window.location.hostname === 'localhost' || window.location.hostna
 const SERVER_IP = isDev 
   ? window.location.hostname.includes('ngrok') 
     ? window.location.hostname  // Use ngrok URL
-    : '192.168.2.42'            // Use local IP for local testing
+    : 'XXXX'            // Use local IP for local testing
   : 'your-production-server.com';
 
 const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
