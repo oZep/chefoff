@@ -133,11 +133,13 @@ function App() {
           setHasSubmittedDrawing(true);
           break;
         case 'SHOW_SUBMISSION_FOR_VOTING':
+          console.log('Received SHOW_SUBMISSION_FOR_VOTING:', message.index + 1, 'of', message.total, 'isHost:', isHost);
           if (isHost) {
             // Host stays on game host screen during voting
             setGameState('playing');
           } else {
             // Only players see voting screen
+            console.log('Player switching to voting screen for submission:', message.submission.playerName);
             setGameState('voting');
           }
           setCurrentSubmission(message.submission);
@@ -145,9 +147,11 @@ function App() {
           setTotalSubmissions(message.total);
           setCurrentCategory(message.category);
           setCurrentPrompt(message.prompt);
+          console.log('Resetting hasVoted to false for new submission');
           setHasVoted(false);
           break;
         case 'VOTE_CAST_CONFIRM':
+          console.log('Vote confirmed, setting hasVoted to true');
           setHasVoted(true);
           break;
         case 'GAME_RESET':
@@ -183,11 +187,12 @@ function App() {
     }
   };
 
-  const handleVote = (submissionId: number) => {
+  const handleVote = (submissionId: number, voteType: 'up' | 'down') => {
     if (ws && !hasVoted) {
       ws.send(JSON.stringify({
         type: 'CAST_VOTE',
-        submissionId: submissionId
+        submissionId: submissionId,
+        voteType: voteType
       }));
     }
   };
@@ -214,7 +219,6 @@ function App() {
       return currentPlayer ? (
         <WaitingScreen 
           player={currentPlayer}
-          allPlayers={allPlayers}
           roomCode={roomCode}
         />
       ) : null;

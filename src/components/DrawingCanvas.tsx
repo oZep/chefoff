@@ -179,14 +179,14 @@ export default function DrawingCanvas({ onDrawingComplete, prompt, timeRemaining
                   onClick={clearCanvas}
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold"
                 >
-                  🗑️ Clear
+                    Clear
                 </button>
 
                 <button
                   onClick={submitDrawing}
                   className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-bold text-lg"
                 >
-                  ✅ Submit Drawing
+                  Submit
                 </button>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function DrawingCanvas({ onDrawingComplete, prompt, timeRemaining
 
           {isSubmitted && (
             <div className="text-center mt-6">
-              <div className="text-2xl font-bold text-green-600 mb-2">✅ Drawing Submitted!</div>
+              <div className="text-2xl font-bold text-green-600 mb-2">Drawing Submitted!</div>
               <p className="text-gray-700">Waiting for other players to finish...</p>
             </div>
           )}

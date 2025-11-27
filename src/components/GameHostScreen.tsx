@@ -30,7 +30,7 @@ interface GameHostScreenProps {
 const CATEGORIES = ['Breakfast', 'Lunch', 'Dinner'];
 
 export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
-  const [currentPhase, setCurrentPhase] = useState<'drawing' | 'voting' | 'results'>('drawing');
+  const [currentPhase, setCurrentPhase] = useState<'drawing' | 'voting' | 'complete'>('drawing');
   const [currentCategoryIndex, setCategoryIndex] = useState(0);
   const [currentPrompt, setCurrentPrompt] = useState<Prompt | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(60);
@@ -94,6 +94,14 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
               ...prev,
               [message.submissionId]: (prev[message.submissionId] || 0) + 1
             }));
+            
+            // Auto-advance if all players voted
+            if (message.allPlayersVoted) {
+              console.log('All players voted, auto-advancing in 2 seconds...');
+              setTimeout(() => {
+                nextSubmission();
+              }, 2000);
+            }
             break;
         }
       };
@@ -106,16 +114,21 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
       setCurrentPhase('voting');
       setCurrentSubmissionIndex(0);
       
-      if (ws) {
+      const categorySubmissions = submissions.filter(s => 
+        s.category === CATEGORIES[currentCategoryIndex]
+      );
+      
+      if (ws && categorySubmissions.length > 0) {
+        // Automatically show first submission to start voting
         ws.send(JSON.stringify({
-          type: 'START_VOTING_PHASE',
-          submissions: submissions.filter(s => 
-            s.category === CATEGORIES[currentCategoryIndex]
-          )
+          type: 'SHOW_SUBMISSION',
+          submission: categorySubmissions[0],
+          index: 0,
+          total: categorySubmissions.length
         }));
       }
     } else if (currentPhase === 'voting') {
-      // Show results or move to next category
+      // Move to next category or end game
       if (currentCategoryIndex < CATEGORIES.length - 1) {
         // Move to next category
         setCategoryIndex(prev => prev + 1);
@@ -141,8 +154,8 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
           }
         }
       } else {
-        // Game complete
-        setCurrentPhase('results');
+        // Game complete - show thanks for playing screen
+        setCurrentPhase('complete');
         if (ws) {
           ws.send(JSON.stringify({
             type: 'GAME_COMPLETE'
@@ -181,18 +194,22 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
     );
     
     if (currentSubmissionIndex < categorySubmissions.length - 1) {
-      setCurrentSubmissionIndex(prev => prev + 1);
+      const nextIndex = currentSubmissionIndex + 1;
+      setCurrentSubmissionIndex(nextIndex);
+      
+      console.log(`Showing submission ${nextIndex + 1} of ${categorySubmissions.length}`);
       
       if (ws) {
         ws.send(JSON.stringify({
           type: 'SHOW_SUBMISSION',
-          submission: categorySubmissions[currentSubmissionIndex + 1],
-          index: currentSubmissionIndex + 1,
+          submission: categorySubmissions[nextIndex],
+          index: nextIndex,
           total: categorySubmissions.length
         }));
       }
     } else {
       // Voting complete for this category
+      console.log('All submissions shown, completing voting phase');
       handlePhaseComplete();
     }
   };
@@ -215,8 +232,7 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
             {CATEGORIES[currentCategoryIndex]} Round
           </h1>
           
-          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border-4 border-amber-200 mb-8">
-            <h2 className="text-4xl font-bold text-purple-900 mb-6">Current Prompt:</h2>
+          <div>
             <p className="text-3xl font-semibold text-purple-700 mb-6">
               "{currentPrompt?.title}"
             </p>
@@ -226,9 +242,7 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
             </div>
           </div>
 
-          {/* Player Status */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Player Progress</h3>
+          <div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {players.map((player) => {
                 const hasSubmitted = categorySubmissions.some(s => s.playerId === player.id);
@@ -247,10 +261,6 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
                   </div>
                 );
               })}
-            </div>
-            
-            <div className="mt-4 text-lg font-semibold text-gray-700">
-              Submissions: {categorySubmissions.length}/{players.length}
             </div>
             
             {categorySubmissions.length === players.length && (
@@ -296,14 +306,6 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
                 className="max-w-full max-h-96 mx-auto rounded-lg shadow-lg mb-6"
               />
               
-              <div className="text-lg text-gray-600 mb-4">
-                Submission {currentSubmissionIndex + 1} of {categorySubmissions.length}
-              </div>
-              
-              <div className="text-2xl font-bold text-blue-600 mb-6">
-                Votes: {votes[currentSubmission.playerId] || 0}
-              </div>
-              
               <button
                 onClick={nextSubmission}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-xl"
@@ -317,22 +319,15 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
     );
   }
 
-  if (currentPhase === 'results') {
+  if (currentPhase === 'complete') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-8">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-6xl font-black text-green-900 mb-8">
-            🎉 Game Complete! 🎉
+            Thanks for Playing!
           </h1>
           
-          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border-4 border-green-200">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Thanks for Playing Kitchen Chaos!
-            </h2>
-            <p className="text-2xl text-gray-700 mb-8">
-              All drawings have been submitted and voted on!
-            </p>
-            
+          <div>
             <button
               onClick={() => window.location.reload()}
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-xl text-xl"

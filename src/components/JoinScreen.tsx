@@ -101,20 +101,6 @@ export default function JoinScreen({ onJoin, isLoading = false, error }: JoinScr
               {isLoading ? 'Joining...' : 'Join Kitchen'}
             </button>
           </form>
-
-          {/* Sample Icons */}
-          <div className="mt-8 pt-6 border-t-2 border-amber-200">
-            <p className="text-center text-amber-700 font-semibold mb-4">
-              You'll get one of these chef icons:
-            </p>
-            <div className="flex justify-center space-x-3">
-              {(['cabbage', 'carrot', 'crab', 'eggplant', 'elbow', 'tomato'] as const).map((icon) => (
-                <div key={icon} className="opacity-60">
-                  <FoodIcon type={icon} />
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>

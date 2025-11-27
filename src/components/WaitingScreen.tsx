@@ -9,21 +9,10 @@ interface Player {
 
 interface WaitingScreenProps {
   player: Player;
-  allPlayers: Player[];
   roomCode: string;
 }
 
-export default function WaitingScreen({ player, allPlayers, roomCode }: WaitingScreenProps) {
-  const [dots, setDots] = useState('');
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots(prev => prev.length >= 3 ? '' : prev + '.');
-    }, 500);
-    
-    return () => clearInterval(interval);
-  }, []);
-
+export default function WaitingScreen({ player, roomCode }: WaitingScreenProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 relative overflow-hidden">
       {/* Background decorative elements */}
@@ -59,16 +48,6 @@ export default function WaitingScreen({ player, allPlayers, roomCode }: WaitingS
                 <p className="text-green-700">You're ready to cook!</p>
               </div>
             </div>
-          </div>
-
-          {/* Waiting Message */}
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-green-900 mb-2">
-              Waiting for the game to start{dots}
-            </h3>
-            <p className="text-green-700">
-              The host will start the game when ready (minimum 2 players needed)
-            </p>
           </div>
 
         </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChefHat, Utensils, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 import FoodIcon from './FoodIcon';
 
 const FOOD_ICONS = ['cabbage', 'carrot', 'crab', 'eggplant', 'elbow', 'tomato'] as const;
@@ -53,14 +53,6 @@ export default function LobbyScreen({ players, roomCode, ws, onGameStart }: Lobb
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-20 text-amber-300 text-8xl">🍳</div>
-        <div className="absolute top-40 right-32 text-amber-300 text-6xl">🥄</div>
-        <div className="absolute bottom-32 left-40 text-amber-300 text-7xl">🍴</div>
-        <div className="absolute top-1/2 left-10 text-amber-300 text-5xl">🥕</div>
-        <div className="absolute bottom-20 right-20 text-amber-300 text-9xl">🥘</div>
-      </div>
-
       <div className="relative min-h-screen flex items-center justify-between px-16 py-12">
         <div className="flex-1 max-w-md space-y-8">
           <div className="text-center space-y-6">

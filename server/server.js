@@ -215,11 +215,29 @@ wss.on('connection', (ws) => {
           }
           break;
 
+        case 'START_VOTING_PHASE':
+          if (ws.isHost) {
+            console.log('Starting voting phase for players');
+            gameState.currentPhase = 'voting';
+            gameState.votes = {}; // Reset votes for new voting phase
+            gameState.currentSubmissionVotes = {}; // Track per-submission votes
+            // The host will send SHOW_SUBMISSION next
+          }
+          break;
+
         case 'SHOW_SUBMISSION':
           if (ws.isHost) {
+            console.log('Showing submission to players for voting:', message.index + 1, 'of', message.total);
+            
+            // Initialize votes for this submission if not exists
+            if (!gameState.votes[message.submission.playerId]) {
+              gameState.votes[message.submission.playerId] = { up: 0, down: 0, votedPlayers: [] };
+            }
+            
             // Broadcast current submission to players for voting
             gameState.players.forEach(player => {
               if (player.ws && player.ws.readyState === 1) {
+                console.log('Sending SHOW_SUBMISSION_FOR_VOTING to player:', player.name);
                 player.ws.send(JSON.stringify({
                   type: 'SHOW_SUBMISSION_FOR_VOTING',
                   submission: message.submission,
