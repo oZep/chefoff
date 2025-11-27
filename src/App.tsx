@@ -239,11 +239,9 @@ function App() {
         <VotingScreen
           currentSubmission={currentSubmission}
           submissionIndex={submissionIndex}
-          totalSubmissions={totalSubmissions}
           onVote={handleVote}
           hasVoted={hasVoted}
           category={currentCategory}
-          prompt={currentPrompt}
         />
       );
     default:

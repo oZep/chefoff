@@ -1,4 +1,3 @@
-// Import SVG files as URLs
 import CabbageSvg from '../../icon/cabbage-svgrepo-com.svg';
 import CarrotSvg from '../../icon/carrot-svgrepo-com.svg';
 import CrabSvg from '../../icon/crab-svgrepo-com.svg';

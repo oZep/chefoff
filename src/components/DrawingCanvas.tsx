@@ -117,7 +117,6 @@ export default function DrawingCanvas({ onDrawingComplete, prompt, timeRemaining
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-4xl font-black text-purple-900 mb-2">Draw Your Creation!</h1>
           <p className="text-2xl font-semibold text-purple-700 mb-4">"{prompt}"</p>
@@ -126,7 +125,6 @@ export default function DrawingCanvas({ onDrawingComplete, prompt, timeRemaining
           </div>
         </div>
 
-        {/* Drawing Area */}
         <div className="bg-white rounded-2xl p-6 shadow-2xl">
           <canvas
             ref={canvasRef}
@@ -138,10 +136,8 @@ export default function DrawingCanvas({ onDrawingComplete, prompt, timeRemaining
             onMouseLeave={stopDrawing}
           />
 
-          {/* Tools */}
           {!isSubmitted && (
             <div className="flex flex-col items-center space-y-4 mt-6">
-              {/* Color Palette */}
               <div className="flex items-center space-x-2">
                 <span className="font-semibold text-gray-700">Colors:</span>
                 <div className="flex space-x-2">
@@ -159,7 +155,6 @@ export default function DrawingCanvas({ onDrawingComplete, prompt, timeRemaining
                 </div>
               </div>
 
-              {/* Size and Actions */}
               <div className="flex justify-center items-center space-x-6">
 
                 <div className="flex items-center space-x-2">

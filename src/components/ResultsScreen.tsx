@@ -18,7 +18,6 @@ interface ResultsScreenProps {
 export default function ResultsScreen({ results, category, onContinue }: ResultsScreenProps) {
   // Sort results by score (highest first)
   const sortedResults = [...results].sort((a, b) => b.score - a.score);
-  const winner = sortedResults[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-amber-50 p-8">

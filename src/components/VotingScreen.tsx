@@ -12,21 +12,17 @@ interface Submission {
 interface VotingScreenProps {
   currentSubmission: Submission | null;
   submissionIndex: number;
-  totalSubmissions: number;
   onVote: (submissionId: number, voteType: 'up' | 'down') => void;
   hasVoted: boolean;
   category: string;
-  prompt: string;
 }
 
 export default function VotingScreen({
   currentSubmission,
   submissionIndex,
-  totalSubmissions,
   onVote,
   hasVoted,
   category,
-  prompt
 }: VotingScreenProps) {
   const [showVoteButton, setShowVoteButton] = useState(true);
 
