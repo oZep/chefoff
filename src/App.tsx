@@ -23,20 +23,8 @@ interface Submission {
   prompt: string;
 }
 
-// Replace 'localhost' with your actual IP address
-// Replace the SERVER_IP line with:
-const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('ngrok');
-const SERVER_IP = isDev 
-  ? window.location.hostname.includes('ngrok') 
-    ? window.location.hostname  // Use ngrok URL
-    : 'XXXX'            // Use local IP for local testing
-  : 'your-production-server.com';
-
-const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-const WS_PORT = window.location.hostname.includes('ngrok') ? '' : ':3001';
-
-// Update WebSocket connections to:
-const websocket = new WebSocket(`${WS_PROTOCOL}//${SERVER_IP}${WS_PORT}`);
+// Use same-origin websocket path; Vite will proxy `/ws` to the backend WS server
+const WS_PATH = '/ws';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>('join');
@@ -65,8 +53,8 @@ function App() {
       setGameState('lobby');
       setIsHost(true);
       
-      // Set up host WebSocket connection - UPDATED IP
-      const websocket = new WebSocket(`ws://${SERVER_IP}:3001`);
+      // Set up host WebSocket connection - same-origin path; Vite will proxy /ws
+      const websocket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}${WS_PATH}`);
       
       websocket.onopen = () => {
         console.log('Connected to server as host');
@@ -102,8 +90,8 @@ function App() {
     setIsJoining(true);
     setJoinError('');
 
-    // Connect to WebSocket server - UPDATED IP
-    const websocket = new WebSocket(`ws://${SERVER_IP}:3001`);
+    // Connect to WebSocket server - same-origin path; Vite will proxy /ws
+    const websocket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}${WS_PATH}`);
     
     websocket.onopen = () => {
       console.log('Connected to server as player');
