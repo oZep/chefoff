@@ -38,7 +38,7 @@ function App() {
   // Drawing phase state
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [currentCategory, setCurrentCategory] = useState('');
-  const [timeRemaining, setTimeRemaining] = useState(60);
+  const [timeRemaining, setTimeRemaining] = useState(120);
   const [hasSubmittedDrawing, setHasSubmittedDrawing] = useState(false);
   // Voting phase state
   const [currentSubmission, setCurrentSubmission] = useState<Submission | null>(null);

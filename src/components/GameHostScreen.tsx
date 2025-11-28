@@ -33,7 +33,7 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
   const [currentPhase, setCurrentPhase] = useState<'drawing' | 'voting' | 'complete'>('drawing');
   const [currentCategoryIndex, setCategoryIndex] = useState(0);
   const [currentPrompt, setCurrentPrompt] = useState<Prompt | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState(60);
+  const [timeRemaining, setTimeRemaining] = useState(120);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [currentSubmissionIndex, setCurrentSubmissionIndex] = useState(0);
   const [votes, setVotes] = useState<Record<number, number>>({});
@@ -60,12 +60,12 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
     if (ws && ws.readyState === WebSocket.OPEN) {
       console.log('Host starting drawing phase:', prompt);
       setCurrentPhase('drawing');
-      setTimeRemaining(60);
+      setTimeRemaining(120);
       ws.send(JSON.stringify({
         type: 'START_DRAWING_PHASE',
         category: prompt.category,
         prompt: prompt.title,
-        timeRemaining: 60
+        timeRemaining: 120
       }));
     } else {
       console.log('WebSocket not ready, retrying in 100ms');
@@ -133,7 +133,7 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
         // Move to next category
         setCategoryIndex(prev => prev + 1);
         setCurrentPhase('drawing');
-        setTimeRemaining(60);
+        setTimeRemaining(120);
         setSubmissions([]);
         setVotes({});
         
@@ -149,7 +149,7 @@ export default function GameHostScreen({ players, ws }: GameHostScreenProps) {
               type: 'START_DRAWING_PHASE',
               category: randomPrompt.category,
               prompt: randomPrompt.title,
-              timeRemaining: 60
+              timeRemaining: 120
             }));
           }
         }

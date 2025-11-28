@@ -16,7 +16,7 @@ const gameState = {
   currentPrompt: null,
   submissions: [],
   votes: {},
-  timeRemaining: 60
+  timeRemaining: 120
 };
 
 // Available icons for players
@@ -301,7 +301,7 @@ wss.on('connection', (ws) => {
             gameState.currentPrompt = null;
             gameState.submissions = [];
             gameState.votes = {};
-            gameState.timeRemaining = 60;
+            gameState.timeRemaining = 120;
             broadcastToAll({
               type: 'GAME_RESET'
             });
